@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajax 2 - Local JSON</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+      }
+      #students {
+        padding: 10px;
+        background: #ddd;
+      }
+
+      #students ul {
+        padding: 10px;
+        margin-bottom: 20px;
+        list-style: none;
+        background: #ccc;
+      }
+
+      #students ul li {
+        background: tomato;
+        margin-bottom: 3px;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="button1">Get User</button>
+    <button id="button2">Get Users</button>
+    <button id="button3">Get Student (from local REST API)</button>
+    <br /><br />
+    <h1>User</h1>
+    <div id="user"></div>
+    <h1>Users</h1>
+    <div id="users"></div>
+    <h1>Students</h1>
+    <div id="students"></div>
+
+    <script>
+      document.getElementById('button1').addEventListener('click', loadUser);
+
+      function loadUser() {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', 'user.json', true);
+
+        xhr.onload = function () {
+          if (this.status === 200) {
+            let user = JSON.parse(this.responseText);
+
+            let output = '';
+
+            output +=
+              '<ul>' +
+              '<li>ID: ' +
+              user.id +
+              '</li>' +
+              '<li>Name: ' +
+              user.name +
+              '</li>' +
+              '<li>Email: ' +
+              user.email +
+              '</li>' +
+              '</ul>';
+
+            document.getElementById('user').innerHTML = output;
+          }
+        };
+
+        xhr.send();
+      }
+
+      document.getElementById('button2').addEventListener('click', loadUsers);
+
+      function loadUsers() {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', 'users.json', true);
+
+        xhr.onload = function () {
+          if (this.status === 200) {
+            let users = JSON.parse(this.responseText);
+
+            let output = '';
+            for (let i in users) {
+              output +=
+                '<ul>' +
+                '<li>ID: ' +
+                users[i].id +
+                '</li>' +
+                '<li>Name: ' +
+                users[i].name +
+                '</li>' +
+                '<li>Email: ' +
+                users[i].email +
+                '</li>' +
+                '</ul>';
+            }
+
+            document.getElementById('users').innerHTML = output;
+          }
+        };
+
+        xhr.send();
+      }
+
+      document
+        .getElementById('button3')
+        .addEventListener('click', loadStudents);
+
+      function loadStudents() {
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('GET', 'http://192.168.1.44:8080/api/v1/student', true);
+
+        xhr.onload = function () {
+          if (this.status === 200) {
+            let students = JSON.parse(this.responseText);
+
+            let output = '';
+
+            for (let i in students) {
+              output += `<ul><li>ID: ${students[i].id}`;
+              output += `<li>NAME: ${students[i].name}`;
+              output += `<li>EMAIL: ${students[i].email}`;
+              output += `<li> DATE OF BIRTH: ${students[i].dob}`;
+              output += `<li>AGE: ${students[i].age}</ul>`;
+            }
+
+            document.getElementById('students').innerHTML = output;
+          }
+        };
+
+        xhr.send();
+      }
+    </script>
+  </body>
+</html>
